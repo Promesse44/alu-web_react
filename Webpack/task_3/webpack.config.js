@@ -17,7 +17,8 @@ module.exports = {
   devServer: {
     port: 8564,
     open: true,
-    static: path.resolve(__dirname, 'public'),
+    static: './public',
+    contentBase: './public',
   },
   plugins: [
     new CleanWebpackPlugin(),

@@ -1,0 +1,34 @@
+.App {
+  font-family: Arial, sans-serif;
+}
+
+.App-header {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  border-bottom: 4px solid #e01d3f;
+  padding: 10px 20px;
+}
+
+.App-header img {
+  height: 200px;
+  width: auto;
+  margin-right: 20px;
+}
+
+.App-header h1 {
+  font-size: 2rem;
+  color: #e01d3f;
+}
+
+.App-body {
+  padding: 20px;
+  min-height: 60vh;
+}
+
+.App-footer {
+  border-top: 4px solid #e01d3f;
+  padding: 10px 20px;
+  font-size: 0.8rem;
+  text-align: center;
+}

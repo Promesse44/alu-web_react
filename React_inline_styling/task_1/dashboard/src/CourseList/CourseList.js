@@ -3,7 +3,7 @@ import { StyleSheet, css } from 'aphrodite';
 import CourseListRow from './CourseListRow';
 
 const styles = StyleSheet.create({
-  CourseList: {
+  list: {
     width: '100%',
     borderCollapse: 'collapse',
   },
@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
 function CourseList() {
   return (
     <div className="CourseList">
-      <table className={css(styles.CourseList)}>
+      <table className={css(styles.list)}>
         <thead>
           <CourseListRow
             isHeader

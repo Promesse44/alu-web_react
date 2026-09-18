@@ -1,27 +1,34 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import logo from './holberton-logo.jpg';
 import './App.css';
+import React from 'react';
+import { hot } from 'react-hot-loader';
+import PropTypes from 'prop-types';
+
+import Header from '../Header/Header';
 import Login from '../Login/Login';
+import Footer from '../Footer/Footer';
+import Notifications from '../Notifications/Notifications';
 import CourseList from '../CourseList/CourseList';
-import BodySection from '../BodySection/BodySection';
 import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom';
+import BodySection from '../BodySection/BodySection';
+import { getLatestNotification } from '../utils/utils';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.handleKeydown = this.handleKeydown.bind(this);
   }
 
+  // Lifecycle Methods
   componentDidMount() {
-    document.addEventListener('keydown', this.handleKeyDown);
+    window.addEventListener('keydown', this.handleKeydown);
   }
 
   componentWillUnmount() {
-    document.removeEventListener('keydown', this.handleKeyDown);
+    window.removeEventListener('keydown', this.handleKeydown);
   }
 
-  handleKeyDown(e) {
+  // Handle Log out
+  handleKeydown(e) {
     if (e.ctrlKey && e.key === 'h') {
       alert('Logging you out');
       this.props.logOut();
@@ -29,32 +36,41 @@ class App extends React.Component {
   }
 
   render() {
-    const { isLoggedIn } = this.props;
+    const { isLoggedIn, logOut } = this.props;
+
+    const listCourses = [
+      { id: 1, name: 'ES6', credit: 60 },
+      { id: 2, name: 'Webpack', credit: 20 },
+      { id: 3, name: 'React', credit: 40 },
+    ];
+    const htmlObj = getLatestNotification();
+    const listNotifications = [
+      { id: 1, type: 'default', value: 'New course available' },
+      { id: 2, type: 'urgent', value: 'New course available' },
+      { id: 3, type: 'urgent', html: htmlObj },
+    ]
+
     return (
-      <div className="App">
-        <div className="App-header">
-          <img src={logo} alt="holberton logo" />
-          <h1>School dashboard</h1>
-        </div>
-        <div className="App-body">
-          {isLoggedIn ? (
-            <BodySectionWithMarginBottom title="Course list">
-              <CourseList />
-            </BodySectionWithMarginBottom>
-          ) : (
-            <BodySectionWithMarginBottom title="Log in to continue">
-              <Login />
-            </BodySectionWithMarginBottom>
-          )}
+      <>
+        <Notifications displayDrawer={ false } listNotifications={ listNotifications } />
+        <div className="App">
+          <Header />
+          { isLoggedIn ?
+          <BodySectionWithMarginBottom title="Course list">
+              <CourseList listCourses={ listCourses } />
+          </BodySectionWithMarginBottom>
+           :
+          <BodySectionWithMarginBottom title="Log in to continue">
+            <Login />
+          </BodySectionWithMarginBottom>
+          }
           <BodySection title="News from the School">
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <p>Graduation date is January 28th!</p>
           </BodySection>
+          <Footer />
         </div>
-        <div className="App-footer">
-          <p>Copyright 2020 - holberton School</p>
-        </div>
-      </div>
-    );
+      </>
+    )
   }
 }
 
@@ -68,4 +84,4 @@ App.defaultProps = {
   logOut: () => {},
 };
 
-export default App;
+export default hot(module)(App);

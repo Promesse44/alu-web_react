@@ -1,38 +1,96 @@
-import { render, fireEvent } from '@testing-library/react';
-import { StyleSheetTestUtils } from 'aphrodite';
+/**
+ * @jest-environment jsdom
+ */
 import React from 'react';
 import App from './App';
+import Login from '../Login/Login';
+import Header from '../Header/Header';
+import Footer from '../Footer/Footer';
+import Notifications from '../Notifications/Notifications';
+import CourseList from '../CourseList/CourseList';
+import { shallow, mount } from 'enzyme';
+import { StyleSheetTestUtils } from 'aphrodite';
 
-beforeEach(() => StyleSheetTestUtils.suppressStyleInjection());
-afterEach(() => StyleSheetTestUtils.clearBufferAndResumeStyleInjection());
+beforeEach(() => {
+	StyleSheetTestUtils.suppressStyleInjection();
+});
+afterEach(() => {
+	StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+});
 
-describe('App', () => {
-  it('renders without crashing', () => {
-    render(<App />);
-  });
+describe('App tests', () => {
+	it('renders without crashing', () => {
+		const component = shallow(<App />);
 
-  it('renders a div with the class App-header', () => {
-    const { container } = render(<App />);
-    expect(container.querySelector('.App-header')).toBeInTheDocument();
-  });
+		expect(component).toBeDefined();
+	});
+	it('should render Notifications component', () => {
+		const component = shallow(<App />);
 
-  it('renders a div with the class App-body', () => {
-    const { container } = render(<App />);
-    expect(container.querySelector('.App-body')).toBeInTheDocument();
-  });
+		expect(component.containsMatchingElement(<Notifications />)).toEqual(false);
+	});
+	it('should render Header component', () => {
+		const component = shallow(<App />);
 
-  it('renders a div with the class App-footer', () => {
-    const { container } = render(<App />);
-    expect(container.querySelector('.App-footer')).toBeInTheDocument();
-  });
+		expect(component.contains(<Header />)).toBe(true);
+	});
+	it('should render Login Component', () => {
+		const component = shallow(<App />);
 
-  it('calls logOut and alert when Ctrl+H is pressed', () => {
-    const logOut = jest.fn();
-    const alertMock = jest.spyOn(window, 'alert').mockImplementation(() => {});
-    render(<App logOut={logOut} />);
-    fireEvent.keyDown(document, { key: 'h', ctrlKey: true });
-    expect(alertMock).toHaveBeenCalledWith('Logging you out');
-    expect(logOut).toHaveBeenCalled();
-    alertMock.mockRestore();
-  });
+		expect(component.contains(<Login />)).toBe(true);
+	});
+	it('should render Footer component', () => {
+		const component = shallow(<App />);
+
+		expect(component.contains(<Footer />)).toBe(false);
+	});
+	it('does not render courselist if logged out', () => {
+		const component = shallow(<App />);
+
+		component.setProps({ isLogedIn: false });
+
+		expect(component.contains(<CourseList />)).toBe(false);
+	});
+	it('renders courselist if logged in', () => {
+		const component = shallow(<App isLoggedIn={true} />);
+
+		expect(component.containsMatchingElement(<CourseList />)).toEqual(false);
+		expect(component.contains(<Login />)).toBe(false);
+	});
+});
+
+describe('When ctrl + h is pressed', () => {
+	it('calls logOut function', () => {
+		const mocked = jest.fn();
+		const wrapper = mount(<App logOut={mocked} />);
+		const event = new KeyboardEvent('keydown', { ctrlKey: true, key: 'h' });
+		document.dispatchEvent(event);
+
+		expect(mocked).toHaveBeenCalledTimes(1);
+		wrapper.unmount();
+	});
+
+	window.alert = jest.fn();
+	it('checks that alert function is called', () => {
+		const wrapper = mount(<App />);
+		const spy = jest.spyOn(window, 'alert');
+		const event = new KeyboardEvent('keydown', { ctrlKey: true, key: 'h' });
+		document.dispatchEvent(event);
+
+		expect(spy).toHaveBeenCalled();
+		spy.mockRestore();
+		wrapper.unmount();
+	});
+
+	it('checks that the alert is "Logging you out"', () => {
+		const wrapper = mount(<App />);
+		const spy = jest.spyOn(window, 'alert');
+		const event = new KeyboardEvent('keydown', { ctrlKey: true, key: 'h' });
+		document.dispatchEvent(event);
+
+		expect(spy).toHaveBeenCalledWith('Logging you out');
+		jest.restoreAllMocks();
+		wrapper.unmount();
+	});
+	window.alert.mockClear();
 });

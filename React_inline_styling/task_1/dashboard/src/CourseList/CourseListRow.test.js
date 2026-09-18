@@ -1,48 +1,26 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
+import { shallow } from 'enzyme';
 import CourseListRow from './CourseListRow';
 
-describe('CourseListRow', () => {
-  it('renders a normal row with the correct cells', () => {
-    const { container } = render(
-      <table>
-        <tbody>
-          <CourseListRow textFirstCell="ES6" textSecondCell="60" />
-        </tbody>
-      </table>
-    );
+describe('<CourseListRow />', () => {
+    it('renders an <CourseListRow /> component', () => {
+        const wrapper = shallow(<CourseListRow />);
+        expect(wrapper).toHaveLength(1);
+    });
 
-    expect(screen.getByText('ES6')).toBeInTheDocument();
-    expect(screen.getByText('60')).toBeInTheDocument();
-    expect(container.querySelector('tr')).toHaveStyle({ backgroundColor: '#f5f5f5ab' });
-  });
+	it('renders a <CourseListRow /> component with isHeader set to true and textSecondCell === null', () => {
+        const wrapper = shallow(<CourseListRow isHeader={true} />);
+        expect(wrapper.find('th')).toHaveLength(1);
+        expect(wrapper.find('th').get(0).props.colSpan).toEqual(2);
+    });
 
-  it('renders a header row and applies the header background style', () => {
-    const { container } = render(
-      <table>
-        <thead>
-          <CourseListRow isHeader textFirstCell="Course name" textSecondCell="Credit" />
-        </thead>
-      </table>
-    );
+    it('tests the component renders two cells when textSecondCell is present', () => {
+        const wrapper = shallow(<CourseListRow isHeader={true} textSecondCell="Holberton Second"/>);
+        expect(wrapper.find('th')).toHaveLength(2);
+    });
 
-    const row = container.querySelector('tr');
-    expect(row).toHaveStyle({ backgroundColor: '#deb5b545' });
-    expect(screen.getByText('Course name')).toBeInTheDocument();
-    expect(screen.getByText('Credit')).toBeInTheDocument();
-  });
-
-  it('renders a normal row and applies the row background style', () => {
-    const { container } = render(
-      <table>
-        <tbody>
-          <CourseListRow textFirstCell="React" textSecondCell="40" />
-        </tbody>
-      </table>
-    );
-
-    const row = container.querySelector('tr');
-    expect(row).toHaveStyle({ backgroundColor: '#f5f5f5ab' });
-  });
+    it('tests the component renders correctly two td elements within a tr element when isHeader is false', () => {
+        const wrapper = shallow(<CourseListRow isHeader={false} />);
+        expect(wrapper.find('tr td')).toHaveLength(2);
+    })
 });

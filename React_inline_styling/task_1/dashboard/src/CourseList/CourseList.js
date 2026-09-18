@@ -1,33 +1,68 @@
 import React from 'react';
-import { StyleSheet, css } from 'aphrodite';
 import CourseListRow from './CourseListRow';
+import PropTypes from 'prop-types';
+import CourseShape from './CourseShape';
+import { StyleSheet, css } from 'aphrodite';
 
 const styles = StyleSheet.create({
-  list: {
-    width: '100%',
-    borderCollapse: 'collapse',
-  },
+	table: {
+		marginLeft: 'auto',
+		marginRight: 'auto',
+		marginTop: '2em',
+		width: '90%',
+		height: 'fit-content',
+		border: '1px solid #ddd',
+		fontSize: '1.2rem',
+		marginBottom: '15em',
+	},
+	th: {
+		borderBottom: '1px solid #ddd',
+		width: '80%',
+	},
+	td: {
+		width: '80%',
+	},
+	tr: {
+		':nth-child(2)': {
+			textAlign: 'left',
+		},
+	},
 });
 
-function CourseList() {
-  return (
-    <div className="CourseList">
-      <table className={css(styles.list)}>
-        <thead>
-          <CourseListRow
-            isHeader
-            textFirstCell="Available courses"
-            textSecondCell="Credit"
-          />
-        </thead>
-        <tbody>
-          <CourseListRow textFirstCell="ES6" textSecondCell="60" />
-          <CourseListRow textFirstCell="Webpack" textSecondCell="20" />
-          <CourseListRow textFirstCell="React" textSecondCell="40" />
-        </tbody>
-      </table>
-    </div>
-  );
-}
+const CourseList = ({ listCourses }) => {
+	return (
+		<table id='CourseList' className={css(styles.table)}>
+			<thead>
+				<CourseListRow textFirstCell='Available courses' isHeader={true} />
+				<CourseListRow
+					textFirstCell='Course name'
+					textSecondCell='Credit'
+					isHeader={true}
+				/>
+			</thead>
+			<tbody>
+				{listCourses.length > 0 ? (
+					listCourses.map(({ id, name, credit }) => (
+						<CourseListRow
+							key={id}
+							textFirstCell={name}
+							textSecondCell={credit}
+						/>
+					))
+				) : (
+					<CourseListRow textFirstCell='No course available yet' />
+				)}
+			</tbody>
+		</table>
+	);
+};
+
+CourseList.propTypes = {
+	listCourses: PropTypes.arrayOf(CourseShape),
+};
+
+CourseList.defaultProps = {
+	listCourses: [],
+};
 
 export default CourseList;

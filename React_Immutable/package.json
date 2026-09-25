@@ -1,0 +1,21 @@
+{
+  "name": "react_immutable",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "dev": "npx babel-node"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "immutable": "^4.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.6.0",
+    "@babel/preset-env": "^7.6.0",
+    "babel-jest": "^26.6.3",
+    "jest": "^26.6.3"
+  }
+}
